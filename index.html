@@ -1,0 +1,2980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP Services | Complete Booking Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide:wght@400;700;900&family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <style>
+        :root {
+            --primary: #0a0a1a;
+            --secondary: #00f3ff;
+            --accent: #ff00c8;
+            --neon: #00ff9d;
+            --light: #1a1a2e;
+            --dark: #050510;
+            --success: #00ff88;
+            --warning: #ffcc00;
+            --gradient: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+            --neon-glow: 0 0 20px var(--secondary), 0 0 40px var(--secondary), 0 0 80px var(--secondary);
+            --accent-glow: 0 0 20px var(--accent), 0 0 40px var(--accent), 0 0 80px var(--accent);
+            --neon-glow-strong: 0 0 25px var(--secondary), 0 0 50px var(--secondary), 0 0 100px var(--secondary);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        body {
+            background: var(--gradient);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+            font-weight: 500;
+        }
+
+        #three-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Audiowide', cursive;
+            font-weight: 700;
+            text-shadow: var(--neon-glow-strong);
+            letter-spacing: 1px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(5, 5, 16, 0.95);
+            backdrop-filter: blur(15px);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 5px 40px rgba(0, 243, 255, 0.4);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--secondary);
+            animation: headerSlide 1s ease;
+        }
+
+        @keyframes headerSlide {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: logoPulse 3s infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); filter: brightness(1.3); }
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            text-shadow: var(--neon-glow-strong);
+            filter: brightness(1.2);
+        }
+
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--secondary), var(--neon), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: var(--neon-glow-strong);
+            font-family: 'Audiowide', cursive;
+        }
+
+        .logo span {
+            color: var(--accent);
+            font-weight: 700;
+            text-shadow: var(--accent-glow);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+            position: relative;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            padding: 0.5rem 0;
+            position: relative;
+            font-size: 1.1rem;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary);
+            text-shadow: var(--neon-glow);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s;
+            box-shadow: var(--neon-glow);
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 0.7rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            box-shadow: var(--neon-glow);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: var(--accent-glow);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--dark);
+            box-shadow: 0 0 20px var(--success);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: var(--dark);
+            box-shadow: 0 0 20px var(--warning);
+        }
+
+        .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--secondary);
+            text-shadow: var(--neon-glow);
+        }
+
+        /* Enhanced Booking Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 16, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 2rem;
+            animation: modalFade 0.5s ease;
+            backdrop-filter: blur(20px);
+        }
+
+        @keyframes modalFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: rgba(26, 26, 46, 0.95);
+            border-radius: 25px;
+            width: 90%;
+            max-width: 600px;
+            padding: 3rem;
+            position: relative;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+            animation: modalSlide 0.6s ease;
+            border: 3px solid var(--secondary);
+            backdrop-filter: blur(25px);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            overflow: hidden;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-60px) rotateX(45deg); opacity: 0; }
+            to { transform: translateY(0) rotateX(0); opacity: 1; }
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 243, 255, 0.1), transparent);
+            animation: rotate 10s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--secondary);
+            transition: 0.3s;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-shadow: var(--neon-glow);
+            background: rgba(0, 243, 255, 0.1);
+            border: 2px solid var(--secondary);
+        }
+
+        .close-modal:hover {
+            color: var(--accent);
+            background: rgba(255, 0, 200, 0.2);
+            transform: rotate(90deg) scale(1.1);
+            border-color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+            animation: formGroupEntrance 0.8s ease both;
+        }
+
+        @keyframes formGroupEntrance {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--secondary);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            text-shadow: 0 0 10px var(--secondary);
+            letter-spacing: 1px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            border: 2px solid rgba(0, 243, 255, 0.4);
+            border-radius: 15px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            background: rgba(5, 5, 16, 0.8);
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 243, 255, 0.2), var(--neon-glow);
+            transform: translateY(-2px);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.3rem;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1rem;
+            animation: btnEntrance 0.8s ease 0.5s both;
+        }
+
+        @keyframes btnEntrance {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 0, 200, 0.4);
+        }
+
+        /* Booking Steps */
+        .booking-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .booking-steps::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(0, 243, 255, 0.3);
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0, 243, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            border: 2px solid var(--secondary);
+            transition: all 0.3s;
+        }
+
+        .step.active .step-icon {
+            background: var(--secondary);
+            color: var(--dark);
+            box-shadow: var(--neon-glow);
+        }
+
+        .step.completed .step-icon {
+            background: var(--success);
+            color: var(--dark);
+            border-color: var(--success);
+        }
+
+        .step-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+        }
+
+        .step.active .step-text {
+            color: var(--secondary);
+            text-shadow: 0 0 10px var(--secondary);
+        }
+
+        .step.completed .step-text {
+            color: var(--success);
+        }
+
+        /* Service Details */
+        .service-details {
+            background: rgba(0, 243, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .service-details h3 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .service-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-item i {
+            color: var(--accent);
+            width: 20px;
+        }
+
+        /* Payment Options */
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .payment-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 15px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .payment-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+        }
+
+        .payment-option.selected {
+            border-color: var(--accent);
+            background: rgba(255, 0, 200, 0.1);
+            transform: scale(1.05);
+        }
+
+        .payment-option i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .payment-option p {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Delivery Options */
+        .delivery-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .delivery-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 15px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .delivery-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+        }
+
+        .delivery-option.selected {
+            border-color: var(--success);
+            background: rgba(0, 255, 136, 0.1);
+            transform: scale(1.05);
+        }
+
+        .delivery-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .delivery-header i {
+            font-size: 1.5rem;
+            color: var(--success);
+        }
+
+        .delivery-header h4 {
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .delivery-price {
+            color: var(--success);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .delivery-time {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Payment Details */
+        .payment-details {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .payment-details h4 {
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .card-element {
+            background: rgba(5, 5, 16, 0.8);
+            border: 2px solid rgba(0, 243, 255, 0.4);
+            border-radius: 15px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .card-element:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(0, 243, 255, 0.2);
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: rgba(0, 243, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .order-summary h4 {
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Success Screen */
+        .success-screen {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: var(--success);
+            margin-bottom: 2rem;
+            animation: successPulse 2s infinite;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .success-screen h3 {
+            color: var(--success);
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .success-screen p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .booking-details {
+            background: rgba(0, 243, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .booking-details h4 {
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 6px;
+            background: rgba(0, 243, 255, 0.3);
+            border-radius: 3px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 12rem 0 10rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: heroFade 1.5s ease;
+        }
+
+        @keyframes heroFade {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero h2 {
+            font-size: 4.5rem;
+            margin-bottom: 2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--secondary), var(--neon), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textGlow 2s infinite alternate;
+            text-shadow: var(--neon-glow-strong);
+            font-family: 'Audiowide', cursive;
+        }
+
+        @keyframes textGlow {
+            from { text-shadow: 0 0 20px var(--secondary), 0 0 40px var(--secondary); }
+            to { text-shadow: 0 0 30px var(--accent), 0 0 60px var(--accent); }
+        }
+
+        .hero p {
+            font-size: 1.6rem;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.5s both;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 400;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .search-box {
+            max-width: 650px;
+            margin: 0 auto;
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--secondary);
+            animation: searchPulse 3s infinite;
+            backdrop-filter: blur(15px);
+        }
+
+        @keyframes searchPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 15px 40px rgba(0, 243, 255, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 20px 50px rgba(0, 243, 255, 0.6); }
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 1.4rem 2rem;
+            border: none;
+            outline: none;
+            font-size: 1.1rem;
+            background: transparent;
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-box button {
+            background: var(--secondary);
+            color: var(--dark);
+            border: none;
+            padding: 0 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .search-box button:hover {
+            background: var(--neon);
+            box-shadow: 0 0 20px var(--neon);
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 8rem 0;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 6rem;
+            position: relative;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title h2 {
+            font-size: 3.5rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: var(--neon-glow-strong);
+        }
+
+        .section-title p {
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.3rem;
+            font-family: 'Exo 2', sans-serif;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 5px;
+            background: var(--secondary);
+            border-radius: 3px;
+            box-shadow: var(--neon-glow);
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 3rem;
+        }
+
+        .category-card {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            border: 2px solid rgba(0, 243, 255, 0.4);
+            backdrop-filter: blur(15px);
+            animation: cardFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .category-card:nth-child(2) { animation-delay: 0.2s; }
+        .category-card:nth-child(3) { animation-delay: 0.4s; }
+        .category-card:nth-child(4) { animation-delay: 0.6s; }
+        .category-card:nth-child(5) { animation-delay: 0.8s; }
+        .category-card:nth-child(6) { animation-delay: 1s; }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            transition: 0.4s ease;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .category-card:hover::before {
+            height: 100%;
+        }
+
+        .category-card:hover {
+            transform: translateY(-20px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(0, 243, 255, 0.6);
+            border-color: var(--secondary);
+        }
+
+        .category-card:hover i,
+        .category-card:hover h3 {
+            color: var(--secondary);
+            text-shadow: var(--neon-glow);
+        }
+
+        .category-card i {
+            font-size: 4rem;
+            color: var(--neon);
+            margin-bottom: 2rem;
+            transition: 0.4s ease;
+            filter: brightness(1.2);
+            text-shadow: 0 0 20px var(--neon);
+        }
+
+        .category-card h3 {
+            font-size: 1.6rem;
+            color: white;
+            transition: 0.4s ease;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 10rem 0;
+            position: relative;
+        }
+
+        .services-filter {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 4rem;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            background: rgba(26, 26, 46, 0.8);
+            border: 2px solid var(--secondary);
+            color: white;
+            padding: 1rem 1.8rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(15px);
+            box-shadow: var(--neon-glow);
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 500;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 243, 255, 0.4);
+        }
+
+        .filter-select option {
+            background: var(--light);
+            color: white;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 3.5rem;
+        }
+
+        .service-card {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s ease;
+            text-align: center;
+            padding: 3rem 2.5rem;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid rgba(0, 243, 255, 0.4);
+            backdrop-filter: blur(15px);
+            animation: serviceCardEntrance 1s ease both;
+        }
+
+        @keyframes serviceCardEntrance {
+            from { opacity: 0; transform: translateY(50px) rotateX(45deg); }
+            to { opacity: 1; transform: translateY(0) rotateX(0); }
+        }
+
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.2s; }
+        .service-card:nth-child(3) { animation-delay: 0.3s; }
+        .service-card:nth-child(4) { animation-delay: 0.4s; }
+        .service-card:nth-child(5) { animation-delay: 0.5s; }
+        .service-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .service-card:hover {
+            transform: translateY(-20px) rotateY(10deg);
+            box-shadow: 0 30px 70px rgba(0, 243, 255, 0.6);
+            border-color: var(--secondary);
+        }
+
+        .service-icon {
+            width: 120px;
+            height: 120px;
+            background: rgba(0, 243, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2.5rem;
+            color: var(--neon);
+            font-size: 3.5rem;
+            transition: 0.4s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border: 3px solid var(--secondary);
+            text-shadow: 0 0 20px var(--neon);
+        }
+
+        .service-card:hover .service-icon {
+            background: var(--secondary);
+            color: var(--dark);
+            transform: rotateY(180deg) scale(1.1);
+            box-shadow: var(--neon-glow);
+        }
+
+        .service-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 15px var(--secondary);
+        }
+
+        .service-card p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            min-height: 70px;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .service-price {
+            font-weight: bold;
+            color: var(--success);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            text-shadow: 0 0 15px var(--success);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .service-rating {
+            color: var(--warning);
+            margin-bottom: 2rem;
+            text-shadow: 0 0 15px var(--warning);
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .service-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: gap 0.3s;
+            position: relative;
+            padding: 0.9rem 2rem;
+            border-radius: 50px;
+            border: 2px solid var(--accent);
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            overflow: hidden;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        .service-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,0,200,0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .service-link:hover::before {
+            left: 100%;
+        }
+
+        .service-link:hover {
+            gap: 20px;
+            background: var(--accent);
+            color: white;
+            box-shadow: var(--accent-glow);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            padding: 8rem 0;
+            background: rgba(5, 5, 16, 0.6);
+            min-height: 80vh;
+            backdrop-filter: blur(15px);
+        }
+
+        .user-info {
+            background: rgba(26, 26, 46, 0.8);
+            padding: 3.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            margin-bottom: 4rem;
+            border-left: 5px solid var(--secondary);
+            backdrop-filter: blur(15px);
+            animation: fadeInUp 1s ease;
+        }
+
+        .user-info h2 {
+            margin-bottom: 2rem;
+            color: var(--secondary);
+            text-shadow: var(--neon-glow);
+        }
+
+        .bookings-list {
+            background: rgba(26, 26, 46, 0.8);
+            padding: 3.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .booking-item {
+            padding: 2.5rem;
+            border-bottom: 2px solid rgba(0, 243, 255, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+            animation: bookingItemEntrance 0.5s ease both;
+        }
+
+        @keyframes bookingItemEntrance {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .booking-item:hover {
+            background: rgba(0, 243, 255, 0.15);
+            transform: translateX(15px);
+        }
+
+        .booking-item:last-child {
+            border-bottom: none;
+        }
+
+        .booking-status {
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .status-pending {
+            background: rgba(255, 204, 0, 0.3);
+            color: var(--warning);
+            box-shadow: 0 0 15px var(--warning);
+        }
+
+        .status-confirmed {
+            background: rgba(0, 243, 255, 0.3);
+            color: var(--secondary);
+            box-shadow: 0 0 15px var(--secondary);
+        }
+
+        .status-completed {
+            background: rgba(0, 255, 136, 0.3);
+            color: var(--success);
+            box-shadow: 0 0 15px var(--success);
+        }
+
+        .status-delivery {
+            background: rgba(0, 150, 255, 0.3);
+            color: #0096ff;
+            box-shadow: 0 0 15px #0096ff;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(5, 5, 16, 0.95);
+            color: white;
+            padding: 6rem 0 3rem;
+            border-top: 2px solid var(--secondary);
+            position: relative;
+            backdrop-filter: blur(15px);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.6rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+            padding-bottom: 1.5rem;
+            color: var(--secondary);
+            text-shadow: var(--neon-glow);
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--accent);
+            box-shadow: var(--accent-glow);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 1.2rem;
+        }
+
+        .footer-column ul li a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--secondary);
+            text-shadow: var(--neon-glow);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s;
+            font-size: 1.3rem;
+        }
+
+        .social-links a:hover {
+            background: var(--accent);
+            transform: translateY(-8px) rotate(15deg);
+            box-shadow: var(--accent-glow);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 4rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        /* 3D Particle Background */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo {
+                margin-bottom: 1.5rem;
+            }
+
+            nav ul {
+                margin: 2rem 0;
+            }
+
+            .auth-buttons {
+                margin-top: 1.5rem;
+            }
+
+            .hero h2 {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu {
+                display: block;
+                position: absolute;
+                top: 1.5rem;
+                right: 1.5rem;
+            }
+
+            nav {
+                width: 100%;
+                display: none;
+            }
+
+            nav.active {
+                display: block;
+            }
+
+            nav ul {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            nav ul li {
+                margin: 0;
+                text-align: center;
+                padding: 1.2rem 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            }
+
+            .hero h2 {
+                font-size: 3rem;
+            }
+
+            .hero p {
+                font-size: 1.4rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .services-filter {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .filter-select {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .modal-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .payment-options,
+            .delivery-options {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-steps {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .booking-steps::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Background Container -->
+    <div id="three-container"></div>
+    
+    <!-- Particle Background -->
+    <div id="particles-js"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-cube"></i>
+                    <h1>UP <span>SERVICES</span></h1>
+                </div>
+                <div class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" id="home-link">HOME</a></li>
+                        <li><a href="#" id="services-link">SERVICES</a></li>
+                        <li><a href="#" id="categories-link">CATEGORIES</a></li>
+                        <li><a href="#" id="dashboard-link" style="display: none;">DASHBOARD</a></li>
+                        <li><a href="#" id="about-link">ABOUT</a></li>
+                        <li><a href="#" id="contact-link">CONTACT</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <button class="btn btn-outline" id="login-btn">LOGIN</button>
+                    <button class="btn btn-primary" id="register-btn">SIGN UP</button>
+                    <button class="btn btn-success" id="logout-btn" style="display: none;">LOGOUT</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home-section">
+        <div class="container">
+            <div class="hero-content">
+                <h2>COMPLETE LOCAL SERVICES</h2>
+                <p>Book any service with our complete booking system including payment and delivery options</p>
+                <div class="search-box">
+                    <input type="text" id="service-search" placeholder="Search for any service...">
+                    <button id="search-btn"><i class="fas fa-search"></i> EXPLORE</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories" id="categories-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>SERVICE CATEGORIES</h2>
+                <p>Browse our comprehensive service categories</p>
+            </div>
+            <div class="categories-grid" id="categories-container">
+                <!-- Categories will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>ALL SERVICES</h2>
+                <p>Complete range of local services with instant booking</p>
+            </div>
+            
+            <div class="services-filter">
+                <select id="category-filter" class="filter-select">
+                    <option value="">All Categories</option>
+                    <option value="Home Services">🏠 Home Services</option>
+                    <option value="Personal Care & Wellness">🧍‍♂️ Personal Care & Wellness</option>
+                    <option value="Food & Tiffin Delivery">🍱 Food & Tiffin Delivery</option>
+                    <option value="Daily Needs & Delivery">🛍️ Daily Needs & Delivery</option>
+                    <option value="Vehicle & Transport">🚗 Vehicle & Transport</option>
+                    <option value="Professional & Freelance Services">💻 Professional Services</option>
+                    <option value="Education & Learning">🏫 Education & Learning</option>
+                    <option value="Office & Business Services">🧹 Office & Business Services</option>
+                    <option value="Travel & Local Assistance">🧳 Travel & Local Assistance</option>
+                    <option value="Pet Care">🐶 Pet Care</option>
+                    <option value="Event & Lifestyle">🎉 Event & Lifestyle</option>
+                    <option value="Emergency & Utility Services">🧰 Emergency & Utility Services</option>
+                    <option value="Child Care & Development">👶 Child Care & Development</option>
+                    <option value="Fitness & Gym Centers">💪 Fitness & Gym Centers</option>
+                    <option value="Laundry & Cleaning">🧺 Laundry & Cleaning</option>
+                    <option value="Music & Instrument Practice">🎵 Music & Instrument Practice</option>
+                </select>
+                
+                <select id="price-filter" class="filter-select">
+                    <option value="">Any Price</option>
+                    <option value="0-500">Under ₹500</option>
+                    <option value="500-1000">₹500 - ₹1000</option>
+                    <option value="1000-2000">₹1000 - ₹2000</option>
+                    <option value="2000+">Above ₹2000</option>
+                </select>
+            </div>
+            
+            <div class="services-grid" id="services-container">
+                <!-- Services will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard" id="dashboard-section">
+        <div class="container">
+            <div class="user-info">
+                <h2>WELCOME, <span id="user-name">USER</span></h2>
+                <p>Email: <span id="user-email">user@example.com</span></p>
+                <p>Phone: <span id="user-phone">Not provided</span></p>
+            </div>
+            <div class="bookings-list">
+                <h2>YOUR BOOKINGS</h2>
+                <div id="bookings-container">
+                    <!-- Bookings will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Modal -->
+    <div class="modal" id="booking-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-booking">&times;</span>
+            
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress" id="booking-progress"></div>
+            </div>
+            
+            <!-- Booking Steps -->
+            <div class="booking-steps">
+                <div class="step active" id="step-1">
+                    <div class="step-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="step-text">Details</div>
+                </div>
+                <div class="step" id="step-2">
+                    <div class="step-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="step-text">Delivery</div>
+                </div>
+                <div class="step" id="step-3">
+                    <div class="step-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="step-text">Payment</div>
+                </div>
+                <div class="step" id="step-4">
+                    <div class="step-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="step-text">Confirm</div>
+                </div>
+            </div>
+
+            <!-- Step 1: Service Details -->
+            <div class="booking-step" id="step-1-content">
+                <div class="service-details">
+                    <h3 id="booking-service-name">Service Name</h3>
+                    <div class="service-info">
+                        <div class="info-item">
+                            <i class="fas fa-user-tie"></i>
+                            <span>Provider: <strong id="booking-service-provider">Saurabh Services</strong></span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-tag"></i>
+                            <span>Price: <strong id="booking-service-price">₹0</strong></span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-phone"></i>
+                            <span>Contact: <strong id="booking-service-contact">9517198863</strong></span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email: <strong id="booking-service-email">saurabh4444verma@gmail.com</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="booking-details-form">
+                    <div class="form-group">
+                        <label for="booking-date"><i class="fas fa-calendar-alt"></i> Preferred Date</label>
+                        <input type="date" id="booking-date" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="booking-time"><i class="fas fa-clock"></i> Preferred Time</label>
+                        <input type="time" id="booking-time" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="booking-address"><i class="fas fa-map-marker-alt"></i> Service Address</label>
+                        <textarea id="booking-address" class="form-control" rows="3" required placeholder="Enter your complete address"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="booking-notes"><i class="fas fa-sticky-note"></i> Special Instructions (Optional)</label>
+                        <textarea id="booking-notes" class="form-control" rows="3" placeholder="Any special requirements or instructions"></textarea>
+                    </div>
+                    
+                    <button type="button" class="submit-btn" id="next-to-delivery">
+                        NEXT: DELIVERY OPTIONS <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Step 2: Delivery Options -->
+            <div class="booking-step" id="step-2-content" style="display: none;">
+                <h3 style="color: var(--secondary); margin-bottom: 2rem; text-align: center;">
+                    <i class="fas fa-truck"></i> DELIVERY OPTIONS
+                </h3>
+                
+                <div class="delivery-options">
+                    <div class="delivery-option" data-type="standard">
+                        <div class="delivery-header">
+                            <i class="fas fa-shipping-fast"></i>
+                            <h4>Standard Delivery</h4>
+                        </div>
+                        <div class="delivery-price">₹0</div>
+                        <div class="delivery-time">2-3 business days</div>
+                    </div>
+                    
+                    <div class="delivery-option" data-type="express">
+                        <div class="delivery-header">
+                            <i class="fas fa-rocket"></i>
+                            <h4>Express Delivery</h4>
+                        </div>
+                        <div class="delivery-price">₹200</div>
+                        <div class="delivery-time">24 hours</div>
+                    </div>
+                    
+                    <div class="delivery-option" data-type="premium">
+                        <div class="delivery-header">
+                            <i class="fas fa-crown"></i>
+                            <h4>Premium Delivery</h4>
+                        </div>
+                        <div class="delivery-price">₹500</div>
+                        <div class="delivery-time">Same day service</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="delivery-instructions"><i class="fas fa-comments"></i> Delivery Instructions</label>
+                    <textarea id="delivery-instructions" class="form-control" rows="3" placeholder="Any special delivery instructions"></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <button type="button" class="submit-btn" style="flex: 1; background: rgba(255,255,255,0.1); border: 2px solid var(--secondary);" id="back-to-details">
+                        <i class="fas fa-arrow-left"></i> BACK
+                    </button>
+                    <button type="button" class="submit-btn" style="flex: 2;" id="next-to-payment">
+                        NEXT: PAYMENT <i class="fas fa-credit-card"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Payment -->
+            <div class="booking-step" id="step-3-content" style="display: none;">
+                <h3 style="color: var(--secondary); margin-bottom: 2rem; text-align: center;">
+                    <i class="fas fa-credit-card"></i> PAYMENT METHOD
+                </h3>
+                
+                <div class="payment-options">
+                    <div class="payment-option" data-method="card">
+                        <i class="fas fa-credit-card"></i>
+                        <p>Credit/Debit Card</p>
+                    </div>
+                    
+                    <div class="payment-option" data-method="upi">
+                        <i class="fas fa-mobile-alt"></i>
+                        <p>UPI Payment</p>
+                    </div>
+                    
+                    <div class="payment-option" data-method="cash">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <p>Cash on Delivery</p>
+                    </div>
+                </div>
+
+                <!-- Card Payment Details -->
+                <div class="payment-details" id="card-details" style="display: none;">
+                    <h4>Card Details</h4>
+                    <div class="form-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="card-expiry">Expiry Date</label>
+                            <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="card-cvv">CVV</label>
+                            <input type="text" id="card-cvv" class="form-control" placeholder="123" maxlength="3">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="card-name">Name on Card</label>
+                        <input type="text" id="card-name" class="form-control" placeholder="John Doe">
+                    </div>
+                </div>
+
+                <!-- UPI Payment Details -->
+                <div class="payment-details" id="upi-details" style="display: none;">
+                    <h4>UPI Details</h4>
+                    <div class="form-group">
+                        <label for="upi-id">UPI ID</label>
+                        <input type="text" id="upi-id" class="form-control" placeholder="yourname@upi">
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h4>Order Summary</h4>
+                    <div class="summary-item">
+                        <span>Service Cost:</span>
+                        <span id="summary-service-cost">₹0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Delivery Charge:</span>
+                        <span id="summary-delivery-cost">₹0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Tax (18%):</span>
+                        <span id="summary-tax">₹0</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total Amount:</span>
+                        <span id="summary-total">₹0</span>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <button type="button" class="submit-btn" style="flex: 1; background: rgba(255,255,255,0.1); border: 2px solid var(--secondary);" id="back-to-delivery">
+                        <i class="fas fa-arrow-left"></i> BACK
+                    </button>
+                    <button type="button" class="submit-btn" style="flex: 2;" id="confirm-payment">
+                        CONFIRM & PAY <i class="fas fa-lock"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Confirmation -->
+            <div class="booking-step" id="step-4-content" style="display: none;">
+                <div class="success-screen">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    
+                    <h3>Booking Confirmed!</h3>
+                    <p>Your service has been successfully booked. You will receive a confirmation email shortly.</p>
+                    
+                    <div class="booking-details">
+                        <h4>Booking Details</h4>
+                        <div class="detail-item">
+                            <span>Service:</span>
+                            <span id="confirm-service-name">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Date & Time:</span>
+                            <span id="confirm-date-time">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Address:</span>
+                            <span id="confirm-address">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Delivery Type:</span>
+                            <span id="confirm-delivery">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Total Paid:</span>
+                            <span id="confirm-total" style="color: var(--success); font-weight: 700;">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Booking ID:</span>
+                            <span id="confirm-booking-id" style="color: var(--secondary); font-family: 'Orbitron', sans-serif;">-</span>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="submit-btn" id="close-booking-success">
+                        <i class="fas fa-home"></i> BACK TO SERVICES
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-login">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 2rem; color: var(--secondary);">ACCESS PORTAL</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email"><i class="fas fa-user-astronaut"></i> EMAIL ADDRESS</label>
+                    <input type="email" id="login-email" class="form-control" required placeholder="Enter your registered email">
+                </div>
+                <div class="form-group">
+                    <label for="login-password"><i class="fas fa-key"></i> PASSWORD</label>
+                    <input type="password" id="login-password" class="form-control" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-sign-in-alt"></i> ACCESS BOOKING PORTAL
+                </button>
+            </form>
+            <p style="text-align: center; margin-top: 1.5rem; color: rgba(255,255,255,0.7);">Don't have an account? <a href="#" id="show-register" style="color: var(--accent);">Create Account</a></p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-register">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 2rem; color: var(--secondary);">CREATE ACCOUNT</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-name"><i class="fas fa-user"></i> FULL NAME</label>
+                    <input type="text" id="register-name" class="form-control" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="register-email"><i class="fas fa-envelope"></i> EMAIL ADDRESS</label>
+                    <input type="email" id="register-email" class="form-control" required placeholder="Enter your email address">
+                </div>
+                <div class="form-group">
+                    <label for="register-phone"><i class="fas fa-phone"></i> PHONE NUMBER</label>
+                    <input type="tel" id="register-phone" class="form-control" required placeholder="Enter your phone number">
+                </div>
+                <div class="form-group">
+                    <label for="register-password"><i class="fas fa-lock"></i> PASSWORD</label>
+                    <input type="password" id="register-password" class="form-control" required placeholder="Create a strong password">
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm"><i class="fas fa-shield-alt"></i> CONFIRM PASSWORD</label>
+                    <input type="password" id="register-confirm" class="form-control" required placeholder="Re-enter your password">
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-user-plus"></i> CREATE ACCOUNT
+                </button>
+            </form>
+            <p style="text-align: center; margin-top: 1.5rem; color: rgba(255,255,255,0.7);">Already have an account? <a href="#" id="show-login" style="color: var(--accent);">Sign In</a></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>UP SERVICES</h3>
+                    <p>Complete local service booking platform with payment and delivery integration.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>QUICK LINKS</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Home Portal</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Service Matrix</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Category Hub</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> About Universe</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Contact Gateway</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>SERVICES</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Home Services</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Personal Care</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Child Care</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Fitness Centers</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Music Practice</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>CONTACT US</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Lucknow, Uttar Pradesh</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> +91 9517198863</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> saurabh4444verma@gmail.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 UP Services. All rights reserved. | Complete Booking Platform</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Service Data Structure
+        const serviceList = [
+            // 🏠 Home Services
+            { category: "Home Services", name: "Electrician", price: 500 },
+            { category: "Home Services", name: "Plumber", price: 600 },
+            { category: "Home Services", name: "Carpenter", price: 800 },
+            { category: "Home Services", name: "Painter", price: 1200 },
+            { category: "Home Services", name: "AC Repair", price: 700 },
+            { category: "Home Services", name: "TV Installation", price: 600 },
+            { category: "Home Services", name: "RO Service", price: 400 },
+            { category: "Home Services", name: "Deep Cleaning", price: 900 },
+            { category: "Home Services", name: "Pest Control", price: 800 },
+            { category: "Home Services", name: "Gardener", price: 500 },
+            { category: "Home Services", name: "Packers & Movers", price: 2000 },
+            { category: "Home Services", name: "CCTV Installation", price: 1500 },
+
+            // 🧍‍♂️ Personal Care & Wellness
+            { category: "Personal Care & Wellness", name: "Beautician at Home", price: 400 },
+            { category: "Personal Care & Wellness", name: "Haircut & Grooming", price: 300 },
+            { category: "Personal Care & Wellness", name: "Spa & Massage", price: 800 },
+            { category: "Personal Care & Wellness", name: "Mehndi Artist", price: 600 },
+            { category: "Personal Care & Wellness", name: "Makeup Artist", price: 1200 },
+            { category: "Personal Care & Wellness", name: "Yoga Trainer", price: 500 },
+            { category: "Personal Care & Wellness", name: "Diet Consultant", price: 400 },
+            { category: "Personal Care & Wellness", name: "Physiotherapist", price: 700 },
+            { category: "Personal Care & Wellness", name: "Baby Care", price: 600 },
+            { category: "Personal Care & Wellness", name: "Elder Care", price: 800 },
+
+            // 🍱 Food & Tiffin Delivery
+            { category: "Food & Tiffin Delivery", name: "Home-cooked Meal", price: 200 },
+            { category: "Food & Tiffin Delivery", name: "Restaurant Delivery", price: 100 },
+            { category: "Food & Tiffin Delivery", name: "Catering Service", price: 1500 },
+            { category: "Food & Tiffin Delivery", name: "Party Food Order", price: 1200 },
+            { category: "Food & Tiffin Delivery", name: "Midnight Delivery", price: 150 },
+
+            // 🛍️ Daily Needs & Delivery
+            { category: "Daily Needs & Delivery", name: "Grocery Delivery", price: 50 },
+            { category: "Daily Needs & Delivery", name: "Vegetable Delivery", price: 40 },
+            { category: "Daily Needs & Delivery", name: "Medicine Delivery", price: 30 },
+            { category: "Daily Needs & Delivery", name: "Milk Delivery", price: 20 },
+            { category: "Daily Needs & Delivery", name: "Bakery Delivery", price: 25 },
+            { category: "Daily Needs & Delivery", name: "Pet Food Delivery", price: 40 },
+            { category: "Daily Needs & Delivery", name: "Gas Cylinder", price: 100 },
+            { category: "Daily Needs & Delivery", name: "Flower Delivery", price: 150 },
+            { category: "Daily Needs & Delivery", name: "Parcel Delivery", price: 60 },
+
+            // 👶 Child Care & Development
+            { category: "Child Care & Development", name: "Child Care", price: 400 },
+            { category: "Child Care & Development", name: "Child Development", price: 500 },
+            { category: "Child Care & Development", name: "Child Psychology", price: 800 },
+            { category: "Child Care & Development", name: "Child Nutrition", price: 600 },
+            { category: "Child Care & Development", name: "Child Safety Training", price: 700 },
+
+            // 💪 Fitness & Gym Centers
+            { category: "Fitness & Gym Centers", name: "Personal Trainer", price: 800 },
+            { category: "Fitness & Gym Centers", name: "Yoga Classes", price: 500 },
+            { category: "Fitness & Gym Centers", name: "Zumba Classes", price: 600 },
+            { category: "Fitness & Gym Centers", name: "Weight Management", price: 1000 },
+            { category: "Fitness & Gym Centers", name: "Sports Coaching", price: 700 },
+
+            // 🧺 Laundry & Cleaning
+            { category: "Laundry & Cleaning", name: "Premium Laundry", price: 300 },
+            { category: "Laundry & Cleaning", name: "Dry Cleaning", price: 400 },
+            { category: "Laundry & Cleaning", name: "Carpet Cleaning", price: 600 },
+            { category: "Laundry & Cleaning", name: "Industrial Cleaning", price: 800 },
+            { category: "Laundry & Cleaning", name: "Eco-friendly Cleaning", price: 500 },
+
+            // 🎵 Music & Instrument Practice
+            { category: "Music & Instrument Practice", name: "Guitar Lessons", price: 600 },
+            { category: "Music & Instrument Practice", name: "Piano Classes", price: 700 },
+            { category: "Music & Instrument Practice", name: "Violin Training", price: 800 },
+            { category: "Music & Instrument Practice", name: "Drum Lessons", price: 600 },
+            { category: "Music & Instrument Practice", name: "Vocal Training", price: 500 },
+            { category: "Music & Instrument Practice", name: "Music Theory", price: 400 }
+        ];
+
+        const iconByCategory = {
+            "Home Services": "fas fa-home",
+            "Personal Care & Wellness": "fas fa-user",
+            "Food & Tiffin Delivery": "fas fa-utensils",
+            "Daily Needs & Delivery": "fas fa-shopping-basket",
+            "Vehicle & Transport": "fas fa-car",
+            "Professional & Freelance Services": "fas fa-briefcase",
+            "Education & Learning": "fas fa-graduation-cap",
+            "Office & Business Services": "fas fa-building",
+            "Travel & Local Assistance": "fas fa-plane",
+            "Pet Care": "fas fa-paw",
+            "Event & Lifestyle": "fas fa-calendar-alt",
+            "Emergency & Utility Services": "fas fa-ambulance",
+            "Child Care & Development": "fas fa-baby",
+            "Fitness & Gym Centers": "fas fa-dumbbell",
+            "Laundry & Cleaning": "fas fa-tshirt",
+            "Music & Instrument Practice": "fas fa-music"
+        };
+
+        // Generate complete services array
+        const services = serviceList.map((item, index) => {
+            return {
+                id: index + 1,
+                name: item.name,
+                description: `Professional ${item.name} service at your doorstep with premium quality`,
+                price: `₹${item.price}`,
+                provider: "Saurabh Services",
+                contact: "9517198863",
+                email: "saurabh4444verma@gmail.com",
+                category: item.category,
+                icon: iconByCategory[item.category],
+                rating: (4 + Math.random()).toFixed(1),
+                basePrice: item.price
+            };
+        });
+
+        // State
+        let currentUser = null;
+        let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+        let selectedService = null;
+        let currentBookingStep = 1;
+        let selectedDelivery = null;
+        let selectedPayment = null;
+        let currentBookingData = {};
+
+        // DOM Elements
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const loginModal = document.getElementById('login-modal');
+        const registerModal = document.getElementById('register-modal');
+        const bookingModal = document.getElementById('booking-modal');
+        const closeLogin = document.getElementById('close-login');
+        const closeRegister = document.getElementById('close-register');
+        const closeBooking = document.getElementById('close-booking');
+        const showRegister = document.getElementById('show-register');
+        const showLogin = document.getElementById('show-login');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const servicesContainer = document.querySelector('#services-container');
+        const categoriesContainer = document.querySelector('#categories-container');
+        const homeSection = document.getElementById('home-section');
+        const servicesSection = document.getElementById('services-section');
+        const categoriesSection = document.getElementById('categories-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+        const homeLink = document.getElementById('home-link');
+        const servicesLink = document.getElementById('services-link');
+        const categoriesLink = document.getElementById('categories-link');
+        const dashboardLink = document.getElementById('dashboard-link');
+        const userName = document.getElementById('user-name');
+        const userEmail = document.getElementById('user-email');
+        const userPhone = document.getElementById('user-phone');
+        const bookingsContainer = document.getElementById('bookings-container');
+        const serviceSearch = document.getElementById('service-search');
+        const searchBtn = document.getElementById('search-btn');
+        const categoryFilter = document.getElementById('category-filter');
+        const priceFilter = document.getElementById('price-filter');
+
+        // Booking Elements
+        const bookingProgress = document.getElementById('booking-progress');
+        const nextToDelivery = document.getElementById('next-to-delivery');
+        const backToDetails = document.getElementById('back-to-delivery');
+        const nextToPayment = document.getElementById('next-to-payment');
+        const backToDelivery = document.getElementById('back-to-delivery');
+        const confirmPayment = document.getElementById('confirm-payment');
+        const closeBookingSuccess = document.getElementById('close-booking-success');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initThreeJS();
+            initParticles();
+            renderCategories();
+            renderServices(services);
+            checkLoginStatus();
+            setupBookingSystem();
+            
+            // Add event listeners for filters
+            categoryFilter.addEventListener('change', filterServices);
+            priceFilter.addEventListener('change', filterServices);
+            serviceSearch.addEventListener('input', filterServices);
+        });
+
+        // Setup Booking System
+        function setupBookingSystem() {
+            // Delivery options
+            document.querySelectorAll('.delivery-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.delivery-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedDelivery = this.getAttribute('data-type');
+                    updateOrderSummary();
+                });
+            });
+
+            // Payment options
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedPayment = this.getAttribute('data-method');
+                    
+                    // Show/hide payment details
+                    document.getElementById('card-details').style.display = 'none';
+                    document.getElementById('upi-details').style.display = 'none';
+                    
+                    if (selectedPayment === 'card') {
+                        document.getElementById('card-details').style.display = 'block';
+                    } else if (selectedPayment === 'upi') {
+                        document.getElementById('upi-details').style.display = 'block';
+                    }
+                    
+                    updateOrderSummary();
+                });
+            });
+
+            // Booking navigation
+            nextToDelivery.addEventListener('click', goToStep2);
+            backToDetails.addEventListener('click', goToStep1);
+            nextToPayment.addEventListener('click', goToStep3);
+            backToDelivery.addEventListener('click', goToStep2);
+            confirmPayment.addEventListener('click', processPayment);
+            closeBookingSuccess.addEventListener('click', closeBookingModal);
+
+            // Form validation for card inputs
+            document.getElementById('card-number').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                let formattedValue = value.replace(/(\d{4})/g, '$1 ').trim();
+                e.target.value = formattedValue;
+            });
+
+            document.getElementById('card-expiry').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^0-9]/g, '');
+                if (value.length >= 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                }
+                e.target.value = value;
+            });
+
+            document.getElementById('card-cvv').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '').substring(0, 3);
+            });
+        }
+
+        // Booking Steps Navigation
+        function goToStep1() {
+            showStep(1);
+        }
+
+        function goToStep2() {
+            // Validate step 1
+            const date = document.getElementById('booking-date').value;
+            const time = document.getElementById('booking-time').value;
+            const address = document.getElementById('booking-address').value;
+
+            if (!date || !time || !address) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+
+            currentBookingData.details = {
+                date,
+                time,
+                address,
+                notes: document.getElementById('booking-notes').value
+            };
+
+            showStep(2);
+        }
+
+        function goToStep3() {
+            if (!selectedDelivery) {
+                showNotification('Please select a delivery option', 'error');
+                return;
+            }
+
+            currentBookingData.delivery = {
+                type: selectedDelivery,
+                instructions: document.getElementById('delivery-instructions').value
+            };
+
+            showStep(3);
+        }
+
+        function showStep(step) {
+            currentBookingStep = step;
+            
+            // Hide all steps
+            document.querySelectorAll('.booking-step').forEach(step => {
+                step.style.display = 'none';
+            });
+            
+            // Show current step
+            document.getElementById(`step-${step}-content`).style.display = 'block';
+            
+            // Update progress bar
+            const progress = (step - 1) * 33.33;
+            bookingProgress.style.width = `${progress}%`;
+            
+            // Update step indicators
+            document.querySelectorAll('.step').forEach((stepEl, index) => {
+                stepEl.classList.remove('active', 'completed');
+                if (index + 1 < step) {
+                    stepEl.classList.add('completed');
+                } else if (index + 1 === step) {
+                    stepEl.classList.add('active');
+                }
+            });
+
+            if (step === 3) {
+                updateOrderSummary();
+            }
+        }
+
+        function updateOrderSummary() {
+            if (!selectedService) return;
+
+            const serviceCost = selectedService.basePrice;
+            let deliveryCost = 0;
+
+            switch (selectedDelivery) {
+                case 'express':
+                    deliveryCost = 200;
+                    break;
+                case 'premium':
+                    deliveryCost = 500;
+                    break;
+                default:
+                    deliveryCost = 0;
+            }
+
+            const tax = (serviceCost + deliveryCost) * 0.18;
+            const total = serviceCost + deliveryCost + tax;
+
+            document.getElementById('summary-service-cost').textContent = `₹${serviceCost}`;
+            document.getElementById('summary-delivery-cost').textContent = `₹${deliveryCost}`;
+            document.getElementById('summary-tax').textContent = `₹${tax.toFixed(2)}`;
+            document.getElementById('summary-total').textContent = `₹${total.toFixed(2)}`;
+        }
+
+        function processPayment() {
+            if (!selectedPayment) {
+                showNotification('Please select a payment method', 'error');
+                return;
+            }
+
+            // Validate payment details based on method
+            if (selectedPayment === 'card') {
+                const cardNumber = document.getElementById('card-number').value;
+                const cardExpiry = document.getElementById('card-expiry').value;
+                const cardCVV = document.getElementById('card-cvv').value;
+                const cardName = document.getElementById('card-name').value;
+
+                if (!cardNumber || !cardExpiry || !cardCVV || !cardName) {
+                    showNotification('Please fill in all card details', 'error');
+                    return;
+                }
+
+                if (cardNumber.replace(/\s/g, '').length !== 16) {
+                    showNotification('Please enter a valid 16-digit card number', 'error');
+                    return;
+                }
+            } else if (selectedPayment === 'upi') {
+                const upiId = document.getElementById('upi-id').value;
+                if (!upiId || !upiId.includes('@')) {
+                    showNotification('Please enter a valid UPI ID', 'error');
+                    return;
+                }
+            }
+
+            // Simulate payment processing
+            showNotification('Processing payment...', 'success');
+            
+            setTimeout(() => {
+                completeBooking();
+            }, 2000);
+        }
+
+        function completeBooking() {
+            const serviceCost = selectedService.basePrice;
+            let deliveryCost = 0;
+            let deliveryType = 'Standard';
+
+            switch (selectedDelivery) {
+                case 'express':
+                    deliveryCost = 200;
+                    deliveryType = 'Express';
+                    break;
+                case 'premium':
+                    deliveryCost = 500;
+                    deliveryType = 'Premium';
+                    break;
+            }
+
+            const tax = (serviceCost + deliveryCost) * 0.18;
+            const total = serviceCost + deliveryCost + tax;
+
+            // Create booking
+            const bookingId = 'BK' + Date.now();
+            const newBooking = {
+                id: bookingId,
+                userId: currentUser.id,
+                serviceId: selectedService.id,
+                serviceName: selectedService.name,
+                date: currentBookingData.details.date,
+                time: currentBookingData.details.time,
+                address: currentBookingData.details.address,
+                notes: currentBookingData.details.notes,
+                deliveryType: deliveryType,
+                deliveryInstructions: currentBookingData.delivery.instructions,
+                paymentMethod: selectedPayment,
+                serviceCost: serviceCost,
+                deliveryCost: deliveryCost,
+                tax: tax,
+                total: total,
+                status: 'confirmed',
+                createdAt: new Date().toISOString()
+            };
+
+            bookings.push(newBooking);
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+
+            // Update confirmation screen
+            document.getElementById('confirm-service-name').textContent = selectedService.name;
+            document.getElementById('confirm-date-time').textContent = `${currentBookingData.details.date} at ${currentBookingData.details.time}`;
+            document.getElementById('confirm-address').textContent = currentBookingData.details.address;
+            document.getElementById('confirm-delivery').textContent = deliveryType;
+            document.getElementById('confirm-total').textContent = `₹${total.toFixed(2)}`;
+            document.getElementById('confirm-booking-id').textContent = bookingId;
+
+            showStep(4);
+            showNotification('Booking confirmed successfully!', 'success');
+        }
+
+        function closeBookingModal() {
+            bookingModal.style.display = 'none';
+            resetBookingForm();
+        }
+
+        function resetBookingForm() {
+            currentBookingStep = 1;
+            selectedDelivery = null;
+            selectedPayment = null;
+            currentBookingData = {};
+            
+            // Reset forms
+            document.getElementById('booking-details-form').reset();
+            document.getElementById('delivery-instructions').value = '';
+            document.getElementById('card-number').value = '';
+            document.getElementById('card-expiry').value = '';
+            document.getElementById('card-cvv').value = '';
+            document.getElementById('card-name').value = '';
+            document.getElementById('upi-id').value = '';
+            
+            // Reset selections
+            document.querySelectorAll('.delivery-option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            document.getElementById('card-details').style.display = 'none';
+            document.getElementById('upi-details').style.display = 'none';
+            
+            showStep(1);
+        }
+
+        // Render Categories
+        function renderCategories() {
+            categoriesContainer.innerHTML = '';
+            const uniqueCategories = [...new Set(services.map(service => service.category))];
+            
+            uniqueCategories.forEach(category => {
+                const categoryCard = document.createElement('div');
+                categoryCard.className = 'category-card';
+                categoryCard.setAttribute('data-category', category);
+                categoryCard.innerHTML = `
+                    <i class="${iconByCategory[category]}"></i>
+                    <h3>${category}</h3>
+                `;
+                categoriesContainer.appendChild(categoryCard);
+            });
+
+            // Add event listeners to category cards
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    categoryFilter.value = category;
+                    filterServices();
+                    servicesSection.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        }
+
+        // Filter Services
+        function filterServices() {
+            const searchText = serviceSearch.value.toLowerCase();
+            const selectedCategory = categoryFilter.value;
+            const selectedPrice = priceFilter.value;
+            
+            let filteredServices = services;
+            
+            // Filter by category
+            if (selectedCategory) {
+                filteredServices = filteredServices.filter(service => service.category === selectedCategory);
+            }
+            
+            // Filter by search text
+            if (searchText) {
+                filteredServices = filteredServices.filter(service => 
+                    service.name.toLowerCase().includes(searchText) || 
+                    service.description.toLowerCase().includes(searchText) ||
+                    service.category.toLowerCase().includes(searchText)
+                );
+            }
+            
+            // Filter by price
+            if (selectedPrice) {
+                filteredServices = filteredServices.filter(service => {
+                    const price = service.basePrice;
+                    switch(selectedPrice) {
+                        case '0-500': return price <= 500;
+                        case '500-1000': return price > 500 && price <= 1000;
+                        case '1000-2000': return price > 1000 && price <= 2000;
+                        case '2000+': return price > 2000;
+                        default: return true;
+                    }
+                });
+            }
+            
+            renderServices(filteredServices);
+        }
+
+        // Render Services
+        function renderServices(servicesToRender) {
+            servicesContainer.innerHTML = '';
+            
+            if (servicesToRender.length === 0) {
+                servicesContainer.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 4rem;">
+                        <i class="fas fa-search" style="font-size: 4rem; color: var(--secondary); margin-bottom: 2rem;"></i>
+                        <h3 style="color: var(--secondary);">No services found</h3>
+                        <p>Try adjusting your search or filter criteria</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            servicesToRender.forEach(service => {
+                const serviceCard = document.createElement('div');
+                serviceCard.className = 'service-card';
+                serviceCard.innerHTML = `
+                    <div class="service-icon">
+                        <i class="${service.icon}"></i>
+                    </div>
+                    <h3>${service.name}</h3>
+                    <p>${service.description}</p>
+                    <div class="service-rating">
+                        ${generateStarRating(service.rating)}
+                        <span>${service.rating}</span>
+                    </div>
+                    <p class="service-price">${service.price}</p>
+                    <a href="#" class="service-link book-service" data-id="${service.id}">
+                        BOOK NOW <i class="fas fa-arrow-right"></i>
+                    </a>
+                `;
+                servicesContainer.appendChild(serviceCard);
+            });
+
+            // Add event listeners to book buttons
+            document.querySelectorAll('.book-service').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (!currentUser) {
+                        showNotification('Please login to book a service', 'error');
+                        loginModal.style.display = 'flex';
+                        return;
+                    }
+                    const serviceId = parseInt(this.getAttribute('data-id'));
+                    selectedService = services.find(s => s.id === serviceId);
+                    openBookingModal();
+                });
+            });
+        }
+
+        function openBookingModal() {
+            if (!selectedService) return;
+            
+            // Update service details in modal
+            document.getElementById('booking-service-name').textContent = selectedService.name;
+            document.getElementById('booking-service-provider').textContent = selectedService.provider;
+            document.getElementById('booking-service-price').textContent = selectedService.price;
+            document.getElementById('booking-service-contact').textContent = selectedService.contact;
+            document.getElementById('booking-service-email').textContent = selectedService.email;
+            
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('booking-date').min = today;
+            
+            bookingModal.style.display = 'flex';
+            resetBookingForm();
+        }
+
+        // Generate star rating
+        function generateStarRating(rating) {
+            let stars = '';
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            const emptyStars = 5 - Math.ceil(rating);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars;
+        }
+
+        // Check Login Status
+        function checkLoginStatus() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (user) {
+                currentUser = user;
+                updateUIForLoggedInUser();
+            }
+        }
+
+        // Update UI for Logged In User
+        function updateUIForLoggedInUser() {
+            loginBtn.style.display = 'none';
+            registerBtn.style.display = 'none';
+            logoutBtn.style.display = 'block';
+            dashboardLink.style.display = 'block';
+            userName.textContent = currentUser.name;
+            userEmail.textContent = currentUser.email;
+            userPhone.textContent = currentUser.phone;
+            renderBookings();
+        }
+
+        // Render Bookings
+        function renderBookings() {
+            const userBookings = bookings.filter(booking => booking.userId === currentUser.id);
+            bookingsContainer.innerHTML = '';
+            
+            if (userBookings.length === 0) {
+                bookingsContainer.innerHTML = '<p>No bookings found. Book your first service!</p>';
+                return;
+            }
+            
+            userBookings.forEach((booking, index) => {
+                const service = services.find(s => s.id === booking.serviceId);
+                const bookingItem = document.createElement('div');
+                bookingItem.className = 'booking-item';
+                bookingItem.style.animationDelay = `${index * 0.1}s`;
+                bookingItem.innerHTML = `
+                    <div>
+                        <h3>${service.name}</h3>
+                        <p>Date: ${booking.date} | Time: ${booking.time}</p>
+                        <p>Address: ${booking.address}</p>
+                        <p>Amount: ₹${booking.total.toFixed(2)}</p>
+                        <p>Delivery: ${booking.deliveryType} | Payment: ${booking.paymentMethod}</p>
+                    </div>
+                    <div>
+                        <span class="booking-status status-${booking.status}">${booking.status.toUpperCase()}</span>
+                    </div>
+                `;
+                bookingsContainer.appendChild(bookingItem);
+            });
+        }
+
+        // Event Listeners
+        loginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
+        });
+
+        registerBtn.addEventListener('click', () => {
+            registerModal.style.display = 'flex';
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            loginBtn.style.display = 'block';
+            registerBtn.style.display = 'block';
+            logoutBtn.style.display = 'none';
+            dashboardLink.style.display = 'none';
+            showSection('home');
+        });
+
+        closeLogin.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+
+        closeRegister.addEventListener('click', () => {
+            registerModal.style.display = 'none';
+        });
+
+        closeBooking.addEventListener('click', () => {
+            bookingModal.style.display = 'none';
+        });
+
+        showRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginModal.style.display = 'none';
+            registerModal.style.display = 'flex';
+        });
+
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerModal.style.display = 'none';
+            loginModal.style.display = 'flex';
+        });
+
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showSection('home');
+        });
+
+        servicesLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showSection('services');
+        });
+
+        categoriesLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showSection('categories');
+        });
+
+        dashboardLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showSection('dashboard');
+        });
+
+        // Show Section
+        function showSection(section) {
+            // Hide all sections
+            homeSection.style.display = 'none';
+            servicesSection.style.display = 'none';
+            categoriesSection.style.display = 'none';
+            dashboardSection.style.display = 'none';
+            
+            // Show selected section
+            if (section === 'home') {
+                homeSection.style.display = 'block';
+                servicesSection.style.display = 'block';
+                categoriesSection.style.display = 'block';
+            } else if (section === 'services') {
+                servicesSection.style.display = 'block';
+            } else if (section === 'categories') {
+                categoriesSection.style.display = 'block';
+            } else if (section === 'dashboard') {
+                dashboardSection.style.display = 'block';
+                renderBookings();
+            }
+        }
+
+        // Login Form Submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Find user
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                loginModal.style.display = 'none';
+                updateUIForLoggedInUser();
+                showNotification('Login successful! Welcome to UP Services.', 'success');
+            } else {
+                showNotification('Invalid email or password. Please try again.', 'error');
+            }
+        });
+
+        // Register Form Submission
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const phone = document.getElementById('register-phone').value;
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            
+            // Validation
+            if (password !== confirm) {
+                showNotification('Passwords do not match. Please try again.', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showNotification('Password must be at least 6 characters long.', 'error');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Check if user already exists
+            if (users.find(u => u.email === email)) {
+                showNotification('Email already registered. Please use a different email.', 'error');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now(),
+                name,
+                email,
+                phone,
+                password,
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            currentUser = newUser;
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            registerModal.style.display = 'none';
+            updateUIForLoggedInUser();
+            showNotification('Account created successfully! Welcome to UP Services.', 'success');
+        });
+
+        // Notification System
+        function showNotification(message, type) {
+            // Remove existing notifications
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            // Add styles for notification
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 30px;
+                background: ${type === 'success' ? 'rgba(0, 255, 136, 0.9)' : 'rgba(255, 59, 59, 0.9)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease, slideOutRight 0.3s ease 2.7s forwards;
+                backdrop-filter: blur(10px);
+                border: 2px solid ${type === 'success' ? 'var(--success)' : '#ff3b3b'};
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        // Add CSS for notification animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            
+            .notification-content {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 600;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Mobile Menu Toggle
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            document.querySelector('nav').classList.toggle('active');
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
+            if (e.target === registerModal) {
+                registerModal.style.display = 'none';
+            }
+            if (e.target === bookingModal) {
+                bookingModal.style.display = 'none';
+            }
+        });
+
+        // Search functionality
+        searchBtn.addEventListener('click', filterServices);
+
+        // Initialize 3D Background
+        function initThreeJS() {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0);
+            document.getElementById('three-container').appendChild(renderer.domElement);
+            
+            // Create floating geometric shapes
+            const geometry = new THREE.IcosahedronGeometry(1, 0);
+            const material = new THREE.MeshPhongMaterial({ 
+                color: 0x00f3ff,
+                emissive: 0x0044ff,
+                shininess: 100,
+                transparent: true,
+                opacity: 0.7
+            });
+            
+            const shapes = [];
+            for (let i = 0; i < 15; i++) {
+                const shape = new THREE.Mesh(geometry, material);
+                shape.position.x = Math.random() * 40 - 20;
+                shape.position.y = Math.random() * 40 - 20;
+                shape.position.z = Math.random() * 40 - 20;
+                shape.rotation.x = Math.random() * Math.PI;
+                shape.rotation.y = Math.random() * Math.PI;
+                shape.scale.setScalar(Math.random() * 2 + 0.5);
+                shapes.push(shape);
+                scene.add(shape);
+            }
+            
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0x00f3ff, 0.8);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+            
+            const pointLight = new THREE.PointLight(0xff00c8, 0.5, 100);
+            pointLight.position.set(10, 10, 10);
+            scene.add(pointLight);
+            
+            camera.position.z = 30;
+            
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                shapes.forEach((shape, index) => {
+                    shape.rotation.x += 0.01;
+                    shape.rotation.y += 0.01;
+                    shape.position.y += Math.sin(Date.now() * 0.001 + index) * 0.02;
+                });
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // Initialize Particle Background
+        function initParticles() {
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 100, density: { enable: true, value_area: 800 } },
+                    color: { value: "#00f3ff" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.7, random: true },
+                    size: { value: 4, random: true },
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: "#00f3ff",
+                        opacity: 0.4,
+                        width: 2
+                    },
+                    move: {
+                        enable: true,
+                        speed: 3,
+                        direction: "none",
+                        random: true,
+                        straight: false,
+                        out_mode: "out",
+                        bounce: false
+                    }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: true, mode: "repulse" },
+                        onclick: { enable: true, mode: "push" },
+                        resize: true
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
